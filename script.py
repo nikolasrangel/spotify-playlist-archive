@@ -416,7 +416,7 @@ class Formatter:
 class URL:
 
     BASE = (
-        "https://github.com/mackorone/spotify-playlist-archive/"
+        "https://github.com/nikolasrangel/spotify-playlist-archive/"
         "blob/master/playlists/"
     )
 
@@ -574,8 +574,8 @@ def push_updates(now):
     print("Configuring git")
 
     config = ["git", "config", "--global"]
-    config_name = run(config + ["user.name", "Mack Ward (Bot Account)"])
-    config_email = run(config + ["user.email", "mackorone.bot@gmail.com"])
+    config_name = run(config + ["user.name", "Nikolas Rangel (Bot Account)"])
+    config_email = run(config + ["user.email", "nikolas.rangel+spotifybot@gmail.com"])
 
     if config_name.returncode != 0:
         raise Exception("Failed to configure name")
@@ -611,7 +611,7 @@ def push_updates(now):
     # It's ok to print the token, Travis will hide it
     token = os.getenv("GITHUB_ACCESS_TOKEN")
     url = (
-        "https://mackorone-bot:{}@github.com/mackorone/"
+        "https://nikolasrangel-bot:{}@github.com/nikolasrangel/"
         "spotify-playlist-archive.git".format(token)
     )
     remote_add = run(["git", "remote", "add", "origin", url])
