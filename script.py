@@ -575,7 +575,7 @@ def push_updates(now):
 
     config = ["git", "config", "--global"]
     config_name = run(config + ["user.name", "Nikolas Rangel (Bot Account)"])
-    config_email = run(config + ["user.email", "nikolas.rangel+spotifybot@gmail.com"])
+    config_email = run(config + ["user.email", "nikolas.rangel+bot@gmail.com"])
 
     if config_name.returncode != 0:
         raise Exception("Failed to configure name")
