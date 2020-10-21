@@ -82,7 +82,7 @@ class Spotify:
 
         return access_token
 
-    def get_playlist(self, playlist_id, aliases):
+    def get_playlist(self, playlist_id):
         playlist_href = self._get_playlist_href(playlist_id)
         response = self._make_request(playlist_href)
 
@@ -99,11 +99,7 @@ class Spotify:
 
         url = self._get_url(response["external_urls"])
 
-        # If the playlist has an alias, use it
-        if playlist_id in aliases:
-            name = aliases[playlist_id]
-        else:
-            name = response["name"]
+        name = response["name"]
 
         # Playlist names can't have "/" so use "\" instead
         name = name.replace("/", "\\")
@@ -446,7 +442,6 @@ def update_files(now):
         client_secret=os.getenv("SPOTIFY_CLIENT_SECRET"),
     )
 
-    aliases_dir = "playlists/aliases"
     plain_dir = "playlists/plain"
     pretty_dir = "playlists/pretty"
     cumulative_dir = "playlists/cumulative"
@@ -456,30 +451,12 @@ def update_files(now):
     # playlists/plain/<playlist_id> and this script will handle the rest.
     playlist_ids = os.listdir(plain_dir)
 
-    # Aliases are alternative playlists names. They're useful for avoiding
-    # naming collisions when archiving personalized playlists, which have the
-    # same name for every user. To add an alias, simply create a file like
-    # playlists/aliases/<playlist_id> that contains the alternative name.
-    aliases = {}
-    for playlist_id in os.listdir(aliases_dir):
-        alias_path = "{}/{}".format(aliases_dir, playlist_id)
-        if playlist_id not in playlist_ids:
-            print("Removing unused alias: {}".format(playlist_id))
-            os.remove(alias_path)
-            continue
-        contents = open(alias_path).read().splitlines()
-        if len(contents) != 1:
-            print("Removing malformed alias: {}".format(playlist_id))
-            os.remove(alias_path)
-            continue
-        aliases[playlist_id] = contents[0]
-
     readme_lines = []
     for playlist_id in playlist_ids:
         plain_path = "{}/{}".format(plain_dir, playlist_id)
 
         try:
-            playlist = spotify.get_playlist(playlist_id, aliases)
+            playlist = spotify.get_playlist(playlist_id)
         except PrivatePlaylistError:
             print("Removing private playlist: {}".format(playlist_id))
             os.remove(plain_path)
